@@ -10,21 +10,16 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
         navigate("/");
       }
       
-      // Handle specific auth events
-      if (event === 'USER_UPDATED' && !session) {
+      // Handle signup errors
+      if (event === 'SIGNED_UP') {
         const { error } = await supabase.auth.getSession();
-        if (error) {
-          if (error.message.includes("User already registered")) {
-            toast.error("This email is already registered. Please sign in instead.");
-          } else {
-            toast.error(error.message);
-          }
+        if (error?.message?.includes("User already registered")) {
+          toast.error("This email is already registered. Please sign in instead.");
         }
       }
     });
