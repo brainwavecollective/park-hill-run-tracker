@@ -4,7 +4,6 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { AuthError } from "@supabase/supabase-js";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -16,13 +15,31 @@ const Auth = () => {
       }
       
       // Handle signup errors
-      if (event === 'SIGNED_UP') {
+      if (event === "SIGNED_UP") {
         const { error } = await supabase.auth.getSession();
         if (error?.message?.includes("User already registered")) {
           toast.error("This email is already registered. Please sign in instead.");
         }
       }
     });
+
+    // Load the Poppins font
+    const loadFont = async () => {
+      const font = new FontFace(
+        'Poppins',
+        'url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2)'
+      );
+
+      try {
+        await font.load();
+        document.fonts.add(font);
+        console.log('Poppins font loaded successfully');
+      } catch (error) {
+        console.error('Error loading Poppins font:', error);
+      }
+    };
+
+    loadFont();
 
     return () => {
       subscription.unsubscribe();
@@ -33,7 +50,7 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-primary">
+          <h2 className="font-poppins text-4xl font-bold tracking-tight bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-transparent bg-clip-text transform hover:scale-105 transition-transform duration-300">
             Park Hill Running Club
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
