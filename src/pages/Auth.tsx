@@ -4,18 +4,19 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { AuthChangeEvent } from "@supabase/supabase-js";
 
 const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session) => {
       if (session) {
         navigate("/");
       }
       
       // Handle signup errors
-      if (event === "SIGNED_UP") {
+      if (event === "SIGNED_UP" as AuthChangeEvent) {
         const { error } = await supabase.auth.getSession();
         if (error?.message?.includes("User already registered")) {
           toast.error("This email is already registered. Please sign in instead.");
