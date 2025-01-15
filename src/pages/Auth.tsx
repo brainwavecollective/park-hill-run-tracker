@@ -15,22 +15,22 @@ const Auth = () => {
       if (session) {
         navigate("/");
       }
-    });
-
-    // Set up auth error listener
-    const {
-      data: { subscription: errorSubscription },
-    } = supabase.auth.onError((error: AuthError) => {
-      if (error.message.includes("User already registered")) {
-        toast.error("This email is already registered. Please sign in instead.");
-      } else {
-        toast.error(error.message);
+      
+      // Handle specific auth events
+      if (event === 'USER_UPDATED' && !session) {
+        const { error } = await supabase.auth.getSession();
+        if (error) {
+          if (error.message.includes("User already registered")) {
+            toast.error("This email is already registered. Please sign in instead.");
+          } else {
+            toast.error(error.message);
+          }
+        }
       }
     });
 
     return () => {
       subscription.unsubscribe();
-      errorSubscription.unsubscribe();
     };
   }, [navigate]);
 
