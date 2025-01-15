@@ -1,8 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Calendar, PlusCircle, Users } from "lucide-react";
+import { Calendar, LogOut, PlusCircle, Users } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <div className="container mx-auto px-4">
@@ -26,6 +34,16 @@ export const Navbar = () => {
               <Users className="w-4 h-4" />
               <span>Manage</span>
             </Link>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 hover:text-primary"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign out
+            </Button>
           </div>
         </div>
       </div>
